@@ -1,0 +1,111 @@
+[build]
+  # Build command (optional - Netlify will auto-detect)
+  command = "echo 'No build step required for static files'"
+  
+  # Publish directory
+  publish = "public"
+  
+  # Functions directory (if using Netlify Functions)
+  # functions = "netlify/functions"
+
+[build.environment]
+  # Environment variables
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+# Redirects for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.jpeg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Custom 404 page
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
+
+# Security headers for manifest.json
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=86400"
+
+# Security headers for service worker
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Content-Type = "application/javascript"
+    Cache-Control = "public, max-age=0"
+    Service-Worker-Allowed = "/"
+
+# CORS headers for ESP8266 communication (if needed)
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Form processing (if using Netlify Forms)
+# [[redirects]]
+#   from = "/contact"
+#   to = "/.netlify/functions/contact"
+#   status = 200
+
+# Branch-specific deployments
+[context.production]
+  command = "echo 'Production build'"
+  
+[context.deploy-preview]
+  command = "echo 'Preview build'"
+  
+[context.branch-deploy]
+  command = "echo 'Branch deploy build'"
+
+# Plugin configuration (if using Netlify plugins)
+# [[plugins]]
+#   package = "@netlify/plugin-sitemap"
+#   [plugins.inputs]
+#     buildDir = "public"
