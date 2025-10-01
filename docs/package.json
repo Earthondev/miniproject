@@ -1,0 +1,49 @@
+{
+  "name": "sleephelper-web",
+  "version": "1.0.0",
+  "description": "SleepHelper - Personal Sleep Comfort Assistant Web Application",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 3000 -o",
+    "dev": "http-server -p 3000 -o -c-1",
+    "build": "echo 'No build step required for static files'",
+    "deploy": "echo 'Deploy to Netlify, Vercel, or GitHub Pages'",
+    "test": "echo 'No tests specified'",
+    "serve": "python3 -m http.server 8000",
+    "serve-python": "python -m SimpleHTTPServer 8000"
+  },
+  "keywords": [
+    "sleep",
+    "esp8266",
+    "iot",
+    "home-automation",
+    "pwa",
+    "thai",
+    "music",
+    "led",
+    "fan",
+    "sleep-helper"
+  ],
+  "author": "SleepHelper Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Earthondev/miniproject.git"
+  },
+  "homepage": "https://github.com/Earthondev/miniproject#readme",
+  "bugs": {
+    "url": "https://github.com/Earthondev/miniproject/issues"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
