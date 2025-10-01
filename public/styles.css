@@ -182,17 +182,13 @@ body {
 
 .connection-status {
     margin-top: 1.5rem;
-    padding: 1rem 1.5rem;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-    display: flex;
-    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border-radius: 12px;
+    display: inline-flex;
+    justify-content: center;
     align-items: center;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
+    gap: 10px;
 }
 
 .status-indicator {
@@ -222,8 +218,11 @@ body {
 
 .status-text {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #37474f;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.8);
 }
 
 .esp-info {
@@ -381,22 +380,69 @@ body {
 }
 
 .button-group {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 0.6rem;
 }
 
 .btn {
-    padding: 0.6rem 1.2rem;
+    padding: 0.9rem 1.2rem;
     border: 2px solid #e1f5fe;
     background: white;
     color: #37474f;
-    border-radius: 25px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: 'Prompt', sans-serif;
     font-weight: 500;
-    font-size: 0.9rem;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #81d4fa, #4fc3f7);
+    color: white;
+    border-color: #4fc3f7;
+}
+
+.btn:disabled,
+.music-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(20%);
+}
+
+.input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e1f5fe;
+    border-radius: 12px;
+    background: white;
+    color: #37474f;
+    font-family: 'Prompt', sans-serif;
+    font-size: 0.95rem;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #81d4fa;
+}
+
+.input-error {
+    color: #f44336;
+    font-size: 0.8rem;
+    margin-top: 6px;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #546e7a;
+}
+
+.saved-indicator {
+    color: #4caf50;
+    font-weight: 500;
 }
 
 .btn:hover {

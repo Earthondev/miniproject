@@ -108,6 +108,33 @@
                 </div>
                 <button class="close-guide-btn" onclick="closeTroubleshootingGuide()">ปิดคู่มือ</button>
             </div>
+
+            <!-- Settings Card -->
+            <div class="card" style="max-width: 820px; margin:16px auto 0;">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 8a4 4 0 100 8 4 4 0 000-8zm8.94 4a6.94 6.94 0 00-.14-1.39l2.03-1.58a.5.5 0 00.12-.64l-1.92-3.32a.5.5 0 00-.6-.22l-2.39.96a6.96 6.96 0 00-1.2-.7l-.36-2.54A.5.5 0 0015 1h-6a.5.5 0 00-.5.42l-.36 2.54c-.42.18-.82.4-1.2.7l-2.39-.96a.5.5 0 00-.6.22L1.03 7.2a.5.5 0 00.12.64l2.03 1.58A6.94 6.94 0 003 12c0 .47.05.93.14 1.39L1.11 14.97a.5.5 0 00-.12.64l1.92 3.32c.13.22.39.31.6.22l2.39-.96c.38.29.78.52 1.2.7l.36 2.54A.5.5 0 009 23h6a.5.5 0 00.5-.42l.36-2.54c.42-.18.82-.4 1.2-.7l2.39.96c.22.09.48 0 .6-.22l1.92-3.32a.5.5 0 00-.12-.64l-2.03-1.58c.09-.46.14-.92.14-1.39z" />
+                        </svg>
+                    </div>
+                    <h2 class="card-title">การตั้งค่าอุปกรณ์</h2>
+                </div>
+                <div class="control-group" style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:240px;">
+                        <label class="control-label">ESP8266 IP Address</label>
+                        <input id="espIpInput" type="text" placeholder="เช่น 192.168.1.50" class="input" />
+                        <div id="ipError" class="input-error" style="display:none;">รูปแบบ IP ไม่ถูกต้อง</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; padding-top:28px;">
+                        <label class="checkbox">
+                            <input id="demoModeCheckbox" type="checkbox" />
+                            <span>Demo mode</span>
+                        </label>
+                        <button class="btn btn-primary" onclick="saveSettings()">บันทึก</button>
+                        <span id="settingsSaved" class="saved-indicator" style="display:none;">✓ บันทึกแล้ว</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="controls-container">

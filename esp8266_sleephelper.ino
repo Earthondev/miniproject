@@ -6,18 +6,22 @@
  * - Fan (พัดลม)
  * - DFPlayer Mini (เสียงกล่อม)
  * 
- * Libraries Required:
+ * Libraries Required (ESP8266):
+ * - ESP8266WiFi (builtin with ESP8266 core)
+ * - ESPAsyncTCP
  * - ESPAsyncWebServer
  * - DFPlayerMini_Fast
  * - ArduinoJson
  */
 
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <WiFi.h>
 #include <ArduinoJson.h>
+#include <SoftwareSerial.h>
 #include <DFPlayerMini_Fast.h>
 
-// WiFi Configuration - ตั้งค่าแล้วสำหรับ IP 172.20.10.5
+// WiFi Configuration - ตั้งค่าแล้วสำหรับ IP 172.20.10.7
 const char* ssid = "____.plxng";
 const char* password = "pleng1209";
 
@@ -32,7 +36,7 @@ AsyncWebServer server(80);
 
 // DFPlayer Mini
 SoftwareSerial dfplayerSerial(DFPLAYER_RX, DFPLAYER_TX);
-DFPlayerMini_Fast dfplayer;
+DFPlayerMini_Fast audioPlayer; // renamed to avoid namespace conflict with dfplayer::
 
 // Device States
 struct DeviceState {
@@ -73,8 +77,7 @@ void setup() {
 }
 
 void loop() {
-  // Handle DFPlayer updates
-  dfplayer.loop();
+  // Update tasks (no DFPlayer loop required for DFPlayerMini_Fast)
   
   // Update hardware outputs
   updateHardware();
@@ -113,12 +116,12 @@ void connectToWiFi() {
 void setupDFPlayer() {
   dfplayerSerial.begin(9600);
   
-  if (!dfplayer.begin(dfplayerSerial)) {
+  if (!audioPlayer.begin(dfplayerSerial)) {
     Serial.println("❌ DFPlayer Mini not found!");
   } else {
     Serial.println("✅ DFPlayer Mini initialized");
-    dfplayer.volume(state.volume);
-    dfplayer.stop();
+    audioPlayer.volume(state.volume);
+    audioPlayer.stop();
   }
 }
 
@@ -131,12 +134,21 @@ void setupWebServer() {
     res->addHeader("Access-Control-Allow-Private-Network", "true");
   };
 
-  // Preflight OPTIONS handler
-  server.on("/status", HTTP_OPTIONS, [addCORS](AsyncWebServerRequest *req){
+  // Preflight OPTIONS handlers (CORS)
+  auto handleOptions = [addCORS](AsyncWebServerRequest *req){
     auto *res = req->beginResponse(204);
     addCORS(res);
     req->send(res);
-  });
+  };
+  server.on("/status",   HTTP_OPTIONS, handleOptions);
+  server.on("/light",    HTTP_OPTIONS, handleOptions);
+  server.on("/fan",      HTTP_OPTIONS, handleOptions);
+  server.on("/play",     HTTP_OPTIONS, handleOptions);
+  server.on("/pause",    HTTP_OPTIONS, handleOptions);
+  server.on("/stop",     HTTP_OPTIONS, handleOptions);
+  server.on("/next",     HTTP_OPTIONS, handleOptions);
+  server.on("/previous", HTTP_OPTIONS, handleOptions);
+  server.on("/volume",   HTTP_OPTIONS, handleOptions);
 
   // Status endpoint - แสดงข้อมูลครบถ้วน
   server.on("/status", HTTP_GET, [addCORS](AsyncWebServerRequest *req){
@@ -221,7 +233,7 @@ void setupWebServer() {
       track = constrain(track, 1, 10);
       state.currentTrack = track;
       
-      dfplayer.play(track);
+      audioPlayer.play(track);
       state.isPlaying = true;
       
       Serial.print("🎵 Playing track: ");
@@ -233,7 +245,7 @@ void setupWebServer() {
       req->send(res);
     } else {
       // Play current track
-      dfplayer.start();
+      audioPlayer.start();
       state.isPlaying = true;
       
       Serial.println("▶️ Resuming playback");
@@ -247,7 +259,7 @@ void setupWebServer() {
 
 
   server.on("/pause", HTTP_GET, [addCORS](AsyncWebServerRequest *req){
-    dfplayer.pause();
+    audioPlayer.pause();
     state.isPlaying = false;
     
     Serial.println("⏸️ Music paused");
@@ -258,7 +270,7 @@ void setupWebServer() {
   });
 
   server.on("/stop", HTTP_GET, [addCORS](AsyncWebServerRequest *req){
-    dfplayer.stop();
+    audioPlayer.stop();
     state.isPlaying = false;
     state.currentTrack = 1;
     
@@ -273,7 +285,7 @@ void setupWebServer() {
     state.currentTrack++;
     if (state.currentTrack > 10) state.currentTrack = 1;
     
-    dfplayer.play(state.currentTrack);
+    audioPlayer.play(state.currentTrack);
     state.isPlaying = true;
     
     Serial.print("⏭️ Next track: ");
@@ -289,7 +301,7 @@ void setupWebServer() {
     state.currentTrack--;
     if (state.currentTrack < 1) state.currentTrack = 10;
     
-    dfplayer.play(state.currentTrack);
+    audioPlayer.play(state.currentTrack);
     state.isPlaying = true;
     
     Serial.print("⏮️ Previous track: ");
@@ -306,7 +318,7 @@ void setupWebServer() {
       int level = req->getParam("level")->value().toInt();
       level = constrain(level, 0, 30);
       
-      dfplayer.volume(level);
+      audioPlayer.volume(level);
       state.volume = level;
       
       Serial.print("🔊 Volume set to: ");

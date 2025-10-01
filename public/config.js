@@ -1,9 +1,9 @@
 // ESP8266 Configuration
 // IP Address ของ ESP8266 ที่เชื่อมต่อแล้ว
-const ESP8266_IP = '172.20.10.7';
+let ESP8266_IP = '172.20.10.7';
 
 // Base URL สำหรับการเชื่อมต่อ ESP8266
-const ESP_BASE_URL = `http://${ESP8266_IP}`;
+let ESP_BASE_URL = `http://${ESP8266_IP}`;
 
 // Web Deployment Configuration
 const WEB_DEPLOYMENT = {
@@ -43,6 +43,21 @@ const CONFIG = {
 };
 
 // ตรวจสอบว่าการตั้งค่า IP ถูกต้องหรือไม่
+// Override from localStorage if available
+try {
+  const savedIp = localStorage.getItem('esp8266_ip');
+  const savedDemo = localStorage.getItem('demo_mode');
+  if (savedIp) {
+    ESP8266_IP = savedIp;
+    ESP_BASE_URL = `http://${ESP8266_IP}`;
+  }
+  if (savedDemo !== null) {
+    WEB_DEPLOYMENT.demoMode = savedDemo === 'true';
+  }
+} catch (e) {
+  // ignore storage errors
+}
+
 if (!ESP8266_IP || ESP8266_IP === 'YOUR_ESP8266_IP_HERE') {
     console.warn('⚠️ กรุณาตั้งค่า IP Address ของ ESP8266 ในไฟล์ config.js!');
 }

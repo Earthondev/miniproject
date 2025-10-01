@@ -16,10 +16,71 @@ if ('serviceWorker' in navigator) {
 
 // Web Deployment Detection
 const isWebDeployment = window.location.protocol === 'https:' || 
-                       window.location.hostname !== 'localhost' && 
-                       window.location.hostname !== '127.0.0.1';
+                       (window.location.hostname !== 'localhost' && 
+                        window.location.hostname !== '127.0.0.1');
 
 console.log('🌐 Web Deployment Mode:', isWebDeployment);
+
+// Settings persistence
+function loadSettings() {
+    try {
+        const savedIp = localStorage.getItem('esp8266_ip');
+        const savedDemo = localStorage.getItem('demo_mode');
+        if (savedIp) {
+            window.ESP8266_IP = savedIp;
+            window.ESP_BASE_URL = `http://${savedIp}`;
+        }
+        if (savedDemo !== null) {
+            WEB_DEPLOYMENT.demoMode = savedDemo === 'true';
+        }
+        // Reflect into UI if elements exist
+        const ipInput = document.getElementById('espIpInput');
+        const demoCheckbox = document.getElementById('demoModeCheckbox');
+        if (ipInput) ipInput.value = window.ESP8266_IP || '';
+        if (demoCheckbox) demoCheckbox.checked = !!WEB_DEPLOYMENT.demoMode;
+    } catch (e) {
+        console.warn('Failed to load settings:', e.message);
+    }
+}
+
+function saveSettings() {
+    try {
+        const ipInput = document.getElementById('espIpInput');
+        const demoCheckbox = document.getElementById('demoModeCheckbox');
+        if (ipInput) {
+            const ip = ipInput.value.trim();
+            const ipRegex = /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+            const ipError = document.getElementById('ipError');
+            if (!ipRegex.test(ip)) {
+                if (ipError) ipError.style.display = 'block';
+                showStatus('รูปแบบ IP ไม่ถูกต้อง', 2500);
+                return;
+            }
+            if (ipError) ipError.style.display = 'none';
+            if (ip) {
+                localStorage.setItem('esp8266_ip', ip);
+                window.ESP8266_IP = ip;
+                window.ESP_BASE_URL = `http://${ip}`;
+            }
+        }
+        if (demoCheckbox) {
+            const demo = !!demoCheckbox.checked;
+            localStorage.setItem('demo_mode', String(demo));
+            WEB_DEPLOYMENT.demoMode = demo;
+        }
+        const saved = document.getElementById('settingsSaved');
+        if (saved) {
+            saved.style.display = 'inline';
+            setTimeout(() => saved.style.display = 'none', 1200);
+        }
+        showStatus('บันทึกการตั้งค่าแล้ว');
+        // Re-run connection check quickly
+        checkESPConnection();
+    } catch (e) {
+        showStatus('บันทึกการตั้งค่าล้มเหลว');
+        console.error(e);
+    }
+}
 
 // Global state management
 const appState = {
@@ -49,8 +110,8 @@ const appState = {
 // ESP8266 Communication Functions
 async function sendToESP(endpoint, params = {}) {
     try {
-        // ถ้าเป็น web deployment และไม่มี ESP8266 ให้ใช้ demo mode
-        if (isWebDeployment && !checkESPConnection()) {
+        // โหมดสาธิต: จำลองการตอบกลับเมื่อเปิด demoMode เท่านั้น
+        if (typeof WEB_DEPLOYMENT !== 'undefined' && WEB_DEPLOYMENT.demoMode) {
             console.log('🌐 Web Demo Mode: Simulating ESP8266 response');
             return simulateESPResponse(endpoint, params);
         }
@@ -212,8 +273,8 @@ async function pingESP() {
 async function checkESPConnection() {
     updateConnectionStatus('checking', 'กำลังตรวจสอบการเชื่อมต่อ...');
     
-    // ถ้าเป็น web deployment ให้ใช้ demo mode
-    if (isWebDeployment) {
+    // ถ้าเปิด demoMode ให้ใช้ demo mode
+    if (typeof WEB_DEPLOYMENT !== 'undefined' && WEB_DEPLOYMENT.demoMode) {
         console.log('🌐 Web Demo Mode: Simulating ESP8266 connection');
         updateConnectionStatus('connected', 'โหมดสาธิต (Demo Mode)');
         showStatus('โหมดสาธิต - ไม่ต้องเชื่อมต่อ ESP8266');
@@ -245,6 +306,7 @@ async function checkESPConnection() {
 function updateConnectionStatus(status, message) {
     const statusDot = document.querySelector('.status-dot');
     const statusText = document.querySelector('.status-text');
+    const controls = document.querySelectorAll('.btn, .music-btn, .slider, .dropdown');
     
     // Remove all status classes
     statusDot.classList.remove('connected', 'disconnected');
@@ -254,14 +316,17 @@ function updateConnectionStatus(status, message) {
         statusDot.classList.add('connected');
         statusText.textContent = message;
         statusText.style.color = '#4caf50';
+        controls.forEach(el => el.disabled = false);
     } else if (status === 'disconnected') {
         statusDot.classList.add('disconnected');
         statusText.textContent = message;
         statusText.style.color = '#f44336';
+        controls.forEach(el => el.disabled = true);
     } else {
         // checking status
         statusText.textContent = message;
         statusText.style.color = '#37474f';
+        controls.forEach(el => el.disabled = true);
     }
 }
 
@@ -673,6 +738,8 @@ function testXHR() {
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 SleepHelper App initialized');
     showStatus('ยินดีต้อนรับสู่ SleepHelper', 2000);
+    // Load persisted settings
+    loadSettings();
     
     // Run network diagnostics
     await runNetworkDiagnostics();
