@@ -110,7 +110,7 @@ const appState = {
 // ESP8266 Communication Functions
 async function sendToESP(endpoint, params = {}) {
     try {
-        // โหมดสาธิต: จำลองการตอบกลับเมื่อเปิด demoMode เท่านั้น
+        // โหมดสาธิต: จำลองการตอบกลับเมื่อเปิด demoMode เท่านั้น (short-circuit)
         if (typeof WEB_DEPLOYMENT !== 'undefined' && WEB_DEPLOYMENT.demoMode) {
             console.log('🌐 Web Demo Mode: Simulating ESP8266 response');
             return simulateESPResponse(endpoint, params);
@@ -273,7 +273,7 @@ async function pingESP() {
 async function checkESPConnection() {
     updateConnectionStatus('checking', 'กำลังตรวจสอบการเชื่อมต่อ...');
     
-    // ถ้าเปิด demoMode ให้ใช้ demo mode
+    // ถ้าเปิด demoMode ให้ใช้ demo mode (ไม่ทำ network calls จริง)
     if (typeof WEB_DEPLOYMENT !== 'undefined' && WEB_DEPLOYMENT.demoMode) {
         console.log('🌐 Web Demo Mode: Simulating ESP8266 connection');
         updateConnectionStatus('connected', 'โหมดสาธิต (Demo Mode)');
@@ -306,7 +306,8 @@ async function checkESPConnection() {
 function updateConnectionStatus(status, message) {
     const statusDot = document.querySelector('.status-dot');
     const statusText = document.querySelector('.status-text');
-    const controls = document.querySelectorAll('.btn, .music-btn, .slider, .dropdown');
+    // Only target control area (do NOT disable Settings UI)
+    const controls = document.querySelectorAll('.controls-container .btn, .controls-container .music-btn, .controls-container .slider, .controls-container .dropdown');
     
     // Remove all status classes
     statusDot.classList.remove('connected', 'disconnected');

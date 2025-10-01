@@ -47,12 +47,14 @@ const CONFIG = {
 try {
   const savedIp = localStorage.getItem('esp8266_ip');
   const savedDemo = localStorage.getItem('demo_mode');
-  if (savedIp) {
+  if (savedIp && savedIp !== ESP8266_IP) {
     ESP8266_IP = savedIp;
     ESP_BASE_URL = `http://${ESP8266_IP}`;
+    console.log('[CONFIG] Loaded IP from storage:', ESP8266_IP);
   }
   if (savedDemo !== null) {
     WEB_DEPLOYMENT.demoMode = savedDemo === 'true';
+    console.log('[CONFIG] Loaded demoMode from storage:', WEB_DEPLOYMENT.demoMode);
   }
 } catch (e) {
   // ignore storage errors
