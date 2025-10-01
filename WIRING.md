@@ -153,17 +153,17 @@ const char* password = "YOUR_WIFI_PASSWORD";
 🌙 SleepHelper ESP8266 Starting...
 ✅ DFPlayer Mini connected!
 ✅ WiFi connected!
-📡 IP address: 172.20.10.5
+📡 IP address: 172.20.10.7
 ✅ SleepHelper ESP8266 Ready!
 ```
 
 ### 3. Test Web Interface
-- เปิด http://172.20.10.5
+- เปิด http://172.20.10.7
 - ทดสอบ API endpoints:
-  - http://172.20.10.5/status
-  - http://172.20.10.5/light?level=2
-  - http://172.20.10.5/fan?speed=3
-  - http://172.20.10.5/play?track=1
+  - http://172.20.10.7/status
+  - http://172.20.10.7/light?level=2
+  - http://172.20.10.7/fan?speed=3
+  - http://172.20.10.7/play?track=1
 
 ### 4. Hardware Test
 - LED Strip: ควรสว่างตามระดับที่ตั้ง

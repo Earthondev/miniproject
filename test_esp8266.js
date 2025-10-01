@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Test script สำหรับทดสอบ ESP8266 connection
-const ESP8266_IP = '172.20.10.5';
+const ESP8266_IP = '172.20.10.7';
 
 async function testESP8266() {
     console.log('🔍 Testing ESP8266 connection...');
@@ -50,7 +50,7 @@ async function testESP8266() {
     console.log('💡 Tips:');
     console.log('   1. ตรวจสอบว่า ESP8266 เปิดอยู่และเชื่อมต่อ WiFi');
     console.log('   2. ตรวจสอบ Serial Monitor ว่าแสดง IP address');
-    console.log('   3. ลอง ping 172.20.10.5 ใน terminal');
+    console.log('   3. ลอง ping 172.20.10.7 ใน terminal');
     console.log('   4. ตรวจสอบว่า ESP8266 และคอมพิวเตอร์อยู่ใน WiFi เดียวกัน');
 }
 

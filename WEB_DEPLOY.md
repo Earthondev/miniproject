@@ -174,7 +174,7 @@ const DEMO_MODE = true;
 ### Environment Variables
 ```bash
 # สร้างไฟล์ .env
-REACT_APP_ESP8266_IP=172.20.10.5
+REACT_APP_ESP8266_IP=172.20.10.7
 REACT_APP_DEMO_MODE=false
 ```
 

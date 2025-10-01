@@ -54,7 +54,7 @@ self.addEventListener('fetch', event => {
   }
 
   // Skip ESP8266 requests (don't cache hardware communication)
-  if (event.request.url.includes('172.20.10.5') || 
+  if (event.request.url.includes('172.20.10.7') || 
       event.request.url.includes('192.168.') ||
       event.request.url.includes('10.0.0.') ||
       event.request.url.includes('localhost')) {

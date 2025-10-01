@@ -79,17 +79,17 @@ MicroSD Card (FAT32 Format)
 ### 3. API Testing
 ```bash
 # Test track selection
-curl http://172.20.10.5/play?track=1
-curl http://172.20.10.5/play?track=5
-curl http://172.20.10.5/play?track=10
+curl http://172.20.10.7/play?track=1
+curl http://172.20.10.7/play?track=5
+curl http://172.20.10.7/play?track=10
 
 # Test volume control
-curl http://172.20.10.5/volume?level=15
-curl http://172.20.10.5/volume?level=25
+curl http://172.20.10.7/volume?level=15
+curl http://172.20.10.7/volume?level=25
 
 # Test play/pause
-curl http://172.20.10.5/pause
-curl http://172.20.10.5/play
+curl http://172.20.10.7/pause
+curl http://172.20.10.7/play
 ```
 
 ## ⚠️ Common Issues

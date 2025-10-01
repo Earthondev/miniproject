@@ -1,6 +1,6 @@
 // ESP8266 Configuration
 // IP Address ของ ESP8266 ที่เชื่อมต่อแล้ว
-const ESP8266_IP = '172.20.10.5';
+const ESP8266_IP = '172.20.10.7';
 
 // Base URL สำหรับการเชื่อมต่อ ESP8266
 const ESP_BASE_URL = `http://${ESP8266_IP}`;
